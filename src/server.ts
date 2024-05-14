@@ -19,7 +19,9 @@ app.get('/', (rec, res) => {
     res.send("API is UP");
 });
 
-app.post('/api/users', usersController.register);
+app.post('/api/users/register', usersController.register);
+app.post('/api/users/login', usersController.login);
+
 
 io.on('connection', () => {
     console.log('io connect');

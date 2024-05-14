@@ -37,12 +37,40 @@ export const register = async (
         console.log('newUser', newUser);
         const savedUser = await newUser.save();
         res.send(normalizeUser(savedUser));
+
     } catch(err) {
         if (err instanceof Error.ValidationError) {
             const messages = Object.values(err.errors).map(err => err.message);
-            return res.status(422).json(messages)
+            return res.status(422).json(messages);
+        }
+        next(err);
+    }
+}
+
+export const login = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+)=> {
+    try {
+        const user = await UserModel
+            .findOne({email: req.body.email})
+            .select('+password');
+
+        const errors = { emailOrPassword: 'Incorrect email or password' };
+
+        if (!user) {
+            return res.status(422).json(errors);
         }
 
+        const isSamePassword = await user.validatePassword(req.body.password);
+        if (!isSamePassword) {
+            return res.status(422).json(errors);
+        }
+
+        res.send(normalizeUser(user));
+
+    } catch (err) {
         next(err);
     }
 }
