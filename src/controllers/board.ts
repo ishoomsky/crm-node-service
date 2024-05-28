@@ -11,14 +11,31 @@ export const getBoards = async (
         if (!req.user) {
             return res.sendStatus(401);
         }
-
-        console.log(req.user.id)
-
         const boards = await BoardModel.find({
             userId: req.user.id
         });
         res.send(boards);
 
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const createBoards = async (
+    req: ExpressRequestInterface,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        if (!req.user) {
+            return res.sendStatus(401);
+        }
+        const newBoard = new BoardModel({
+            title: req.body.title,
+            userId: req.user.id,
+        });
+        const savedBoard = await newBoard.save();
+        res.send(savedBoard);
     } catch (error) {
         next(error);
     }

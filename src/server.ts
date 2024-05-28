@@ -33,7 +33,7 @@ app.post('/api/users/register', usersController.register);
 app.post('/api/users/login', usersController.login);
 app.get('/api/user', authMiddleware, usersController.currentUser);
 app.get('/api/boards', authMiddleware, boardsController.getBoards)
-
+app.post('/api/boards', authMiddleware, boardsController.createBoards)
 
 io.on('connection', () => {
     console.log('io connect');
