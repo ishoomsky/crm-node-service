@@ -7,6 +7,7 @@ import * as boardsController from './controllers/board';
 import bodyParser from 'body-parser';
 import authMiddleware from './middlewares/auth';
 import cors from 'cors';
+import SocketEventsEnum from "./types/socket-events.enum";
 
 const app = express();
 const httpServer = createServer(app);
@@ -40,9 +41,13 @@ app.get('/api/boards', authMiddleware, boardsController.getBoards)
 app.get('/api/boards/:boardId', authMiddleware, boardsController.getBoard)
 app.post('/api/boards', authMiddleware, boardsController.createBoards)
 
-
-io.on('connection', () => {
-    console.log('io connect');
+io.on('connection', (socket) => {
+    socket.on(SocketEventsEnum.BoardsJoin, (data) => {
+        boardsController.joinBoard(io, socket, data);
+    });
+    socket.on(SocketEventsEnum.BoardsLeave, (data) => {
+        boardsController.leaveBoard(io, socket, data);
+    });
 });
 
 mongoose.connect('mongodb://localhost:27017/crm')
