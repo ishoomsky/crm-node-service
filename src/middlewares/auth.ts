@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { secret } from "../config";
 import UserModel from "../models/user";
-import { ExpressRequestInterface } from "../types/expressRequest.interface";
+import { ExpressRequestInterface } from "../types/express-request.interface";
 
 export default async (
     req: ExpressRequestInterface,

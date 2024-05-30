@@ -8,6 +8,10 @@ import bodyParser from 'body-parser';
 import authMiddleware from './middlewares/auth';
 import cors from 'cors';
 import SocketEventsEnum from "./types/socket-events.enum";
+import jwt from 'jsonwebtoken';
+import { secret } from "./config";
+import User from './models/user';
+import { AppSocketInterface } from "./types/app-socket.interface";
 
 const app = express();
 const httpServer = createServer(app);
@@ -23,12 +27,6 @@ app.use(bodyParser.urlencoded({
     extended: true,
 }));
 
-mongoose.set('toJSON', {
-    virtuals: true,
-    transform: (_, converted) => {
-        delete converted._id;
-    }
-})
 
 app.get('/', (rec, res) => {
     res.send("API is UP");
@@ -41,7 +39,22 @@ app.get('/api/boards', authMiddleware, boardsController.getBoards)
 app.get('/api/boards/:boardId', authMiddleware, boardsController.getBoard)
 app.post('/api/boards', authMiddleware, boardsController.createBoards)
 
-io.on('connection', (socket) => {
+io.use(async (socket: AppSocketInterface, next) => {
+    try {
+        const token = (socket.handshake.auth.token as string) ?? '';
+        const data = jwt.verify(token.split(' ')[1], secret) as {id: string, email: string};
+        const user = await User.findById(data.id);
+
+        if (!user) {
+            return next(new Error('Authentication error'));
+        }
+
+        socket.user = user;
+        next();
+    } catch (error) {
+        next(new Error('Authentication error'))
+    }
+}).on('connection', (socket) => {
     socket.on(SocketEventsEnum.BoardsJoin, (data) => {
         boardsController.joinBoard(io, socket, data);
     });
@@ -50,6 +63,12 @@ io.on('connection', (socket) => {
     });
 });
 
+mongoose.set('toJSON', {
+    virtuals: true,
+    transform: (_, converted) => {
+        delete converted._id;
+    }
+})
 mongoose.connect('mongodb://localhost:27017/crm')
     .then(() => {
         console.log('[MONGO DB] Connected');
