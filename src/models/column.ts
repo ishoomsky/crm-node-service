@@ -1,4 +1,4 @@
-import {Schema, model} from 'mongoose';
+import { Schema, model} from 'mongoose';
 import { ColumnDocument } from "../types/column.interface";
 
 const columnSchema = new Schema<ColumnDocument>({

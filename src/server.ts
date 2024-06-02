@@ -65,6 +65,9 @@ io.use(async (socket: AppSocketInterface, next) => {
     socket.on(SocketEventsEnum.BoardsLeave, (data) => {
         boardsController.leaveBoard(io, socket, data);
     });
+    socket.on(SocketEventsEnum.ColumnsCreate, (data) => {
+        columnsController.createColumn(io, socket, data);
+    });
 });
 
 mongoose.set('toJSON', {
