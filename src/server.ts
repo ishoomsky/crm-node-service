@@ -77,7 +77,10 @@ io.use(async (socket: AppSocketInterface, next) => {
     });
     socket.on(SocketEventsEnum.BoardsUpdate, (data) => {
         boardsController.updateBoard(io, socket, data);
-    }); 
+    });
+    socket.on(SocketEventsEnum.BoardsDelete, (data) => {
+        boardsController.deleteBoard(io, socket, data);
+    });
 });
 
 mongoose.set('toJSON', {
