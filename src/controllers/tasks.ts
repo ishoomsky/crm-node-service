@@ -16,7 +16,6 @@ export const getTasks = async (
         }
         const tasks = await TaskModel.find({
             boardId: req.params.boardId,
-            columnId: req.params.columnId,
         });
         res.send(tasks);
 

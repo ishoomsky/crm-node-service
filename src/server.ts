@@ -69,12 +69,21 @@ io.use(async (socket: AppSocketInterface, next) => {
     socket.on(SocketEventsEnum.BoardsLeave, (data) => {
         boardsController.leaveBoard(io, socket, data);
     });
+
     socket.on(SocketEventsEnum.ColumnsCreate, (data) => {
         columnsController.createColumn(io, socket, data);
     });
+    socket.on(SocketEventsEnum.ColumnsUpdate, (data) => {
+        columnsController.updateColumn(io, socket, data);
+    });
+    socket.on(SocketEventsEnum.ColumnsDelete, (data) => {
+        columnsController.deleteColumn(io, socket, data);
+    });
+
     socket.on(SocketEventsEnum.TasksCreate, (data) => {
         tasksController.createTask(io, socket, data);
     });
+
     socket.on(SocketEventsEnum.BoardsUpdate, (data) => {
         boardsController.updateBoard(io, socket, data);
     });
