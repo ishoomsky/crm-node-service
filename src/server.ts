@@ -75,6 +75,9 @@ io.use(async (socket: AppSocketInterface, next) => {
     socket.on(SocketEventsEnum.TasksCreate, (data) => {
         tasksController.createTask(io, socket, data);
     });
+    socket.on(SocketEventsEnum.BoardsUpdate, (data) => {
+        boardsController.updateBoard(io, socket, data);
+    }); 
 });
 
 mongoose.set('toJSON', {
