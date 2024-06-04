@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import * as usersController from './controllers/users';
 import * as boardsController from './controllers/board';
 import * as columnsController from './controllers/columns';
+import * as tasksController from './controllers/tasks';
 
 import bodyParser from 'body-parser';
 import authMiddleware from './middlewares/auth';
@@ -14,6 +15,7 @@ import jwt from 'jsonwebtoken';
 import { secret } from "./config";
 import User from './models/user';
 import { AppSocketInterface } from "./types/app-socket.interface";
+import task from "./models/task";
 
 const app = express();
 const httpServer = createServer(app);
@@ -41,6 +43,8 @@ app.get('/api/boards', authMiddleware, boardsController.getBoards);
 app.get('/api/boards/:boardId', authMiddleware, boardsController.getBoard);
 app.post('/api/boards', authMiddleware, boardsController.createBoards);
 app.get('/api/boards/:boardId/columns', authMiddleware, columnsController.getColumns);
+app.get('/api/boards/:boardId/tasks/', authMiddleware, tasksController.getTasks);
+
 
 
 io.use(async (socket: AppSocketInterface, next) => {
@@ -67,6 +71,9 @@ io.use(async (socket: AppSocketInterface, next) => {
     });
     socket.on(SocketEventsEnum.ColumnsCreate, (data) => {
         columnsController.createColumn(io, socket, data);
+    });
+    socket.on(SocketEventsEnum.TasksCreate, (data) => {
+        tasksController.createTask(io, socket, data);
     });
 });
 
