@@ -21,7 +21,7 @@ enum SocketEvents {
     TasksCreateFailure = 'tasks:createFailure',
     TasksUpdate = 'task:update',
     TasksUpdateSuccess = 'task:updateSuccess',
-    TasksCreateUpdateFailure = 'task:updateFailure',
+    TasksUpdateFailure = 'task:updateFailure',
     TasksDelete = 'task:delete',
     TasksDeleteSuccess = 'task:deleteSuccess',
     TasksDeleteFailure = 'task:deleteFailure',
